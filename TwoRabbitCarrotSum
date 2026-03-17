@@ -1,0 +1,72 @@
+
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+/*
+4
+4
+R B B R
+O O O O
+O O O O
+O O O C
+ */
+public class RabbitAndTwoCarrot {
+
+    static int bfs(char[][] matrix ,Queue<int[]> queue) {
+
+       int [][]dir = { { 0 , 1 }, { 0 , -1} , { 1 , 0 }, {1 , -1 } , { -1 , 0 } , {-1 , 1} , { 1 , 1} , {-1 , -1}};
+       while( !queue.isEmpty()) {
+           int row = queue.peek()[0];
+           int col = queue.peek()[1];
+           int count = queue.peek()[2];
+           queue.poll();
+           for (int[] d : dir) {
+               int nextRow = row + d[0];
+               int nextCol = col + d[1];
+               if (nextRow >= 0 && nextRow < matrix.length && nextCol >= 0 && nextCol < matrix[0].length && matrix[nextRow][nextCol]!='X' && matrix[nextRow][nextCol] != 'B') {
+                   if ( matrix[nextRow][nextCol] == 'C') return count +1 ;
+                   if (matrix[nextRow][nextCol] == 'X' || matrix[nextRow][nextCol]=='B') continue;
+                   matrix[nextRow][nextCol] = 'X';
+
+                   queue.add(new int[]{nextRow, nextCol , count+1});
+               }
+           }
+
+       }
+       return -1;
+    }
+    static void main() {
+        int [][] rabbitLocation = new int [2][3];
+        Queue<int [] > queue1 = new LinkedList<>() ;
+        Queue<int [] > queue2 = new LinkedList<>() ;
+        int rabbitNumber = 0;
+        Scanner sc = new Scanner(System.in);
+        int R = sc.nextInt();
+        int C = sc.nextInt();
+        char [][] matrix = new char[R][C];
+        for (int row = 0; row < R; row++) {
+            for (int col = 0; col < C; col++)
+            {
+                matrix[row][col] = sc.next().charAt(0);
+                if (matrix[row][col] == 'R')
+                {
+                    rabbitLocation[rabbitNumber] = new int [] {row , col , 0 };
+                    rabbitNumber++;
+                }
+
+            }
+
+        }
+        IO.println(Arrays.deepToString(matrix));
+        queue1.add(rabbitLocation[0]);
+        queue2.add(rabbitLocation[1]);
+        System.out.println( Math.max(bfs( matrix ,  queue1 ), bfs( matrix ,  queue2 )));
+        System.out.println( );
+        sc.close();
+    }
+
+
+
+}
