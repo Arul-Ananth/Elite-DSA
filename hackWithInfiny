@@ -1,0 +1,98 @@
+import java.util.Scanner;
+
+public class Main {
+
+    static int n;
+    static long m;
+    static long[] v;
+    static long[] d;
+
+    static long countMeals(long x) {
+        long total = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (v[i] >= x) {
+                long count = (v[i] - x) / d[i] + 1;
+                total += count;
+
+                if (total > m) {
+                    return total;
+                }
+            }
+        }
+
+        return total;
+    }
+
+    static long[] getCountAndSum(long x) {
+        long totalCount = 0;
+        long totalSum = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            if (v[i] >= x) {
+
+                long count = (v[i] - x) / d[i] + 1;
+
+                totalCount += count;
+
+                long first = v[i];
+                long last = v[i] - (count - 1) * d[i];
+
+                long sum = count * (first + last) / 2;
+
+                totalSum += sum;
+            }
+        }
+
+        return new long[]{totalCount, totalSum};
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        n = sc.nextInt();
+        m = sc.nextLong();
+
+        v = new long[n];
+        d = new long[n];
+
+        for (int i = 0; i < n; i++) {
+            v[i] = sc.nextLong();
+        }
+
+        for (int i = 0; i < n; i++) {
+            d[i] = sc.nextLong();
+        }
+
+        long low = 1;
+        long high = 1000000000;
+        long answerValue = 0;
+
+        while (low <= high) {
+
+            long mid = (low + high) / 2;
+
+            long meals = countMeals(mid);
+
+            if (meals >= m) {
+                answerValue = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        long[] result = getCountAndSum(answerValue + 1);
+
+        long usedMeals = result[0];
+        long sum = result[1];
+
+        long remaining = m - usedMeals;
+
+        sum += remaining * answerValue;
+
+        System.out.println(sum);
+    }
+}
